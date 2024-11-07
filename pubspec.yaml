@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.5
+  json_annotation: ^4.9.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -46,6 +48,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  build_runner: ^2.3.3
+  json_serializable: ^6.7.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -59,9 +63,43 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/wanderlogotol.png
+    - assets/images/cuscoofi.png
+    - assets/images/tour_package_icon_vector_1_removebg_preview_1.png
+    - assets/images/iconexplore2.png
+    - assets/images/iconsaved.png
+    - assets/images/iconprofile.png
+    - assets/images/perfiluser.png
+    - assets/images/iconexplore2.png
+    - assets/images/iconsaved.png
+    - assets/images/iconprofile.png
+    - assets/images/detailimage1.png
+    - assets/images/hotelicon.png
+    - assets/images/attractionicon.png
+    - assets/images/restauranticon.png
+    - assets/images/flighticon.png
+    - assets/images/emptysavedimage.png
+    - assets/images/restaurantes.png
+    - assets/images/atracciones.png
+    - assets/images/telos.png
+    - assets/images/vuelos.png
+    - assets/images/bottom_main.png
+    - assets/images/user_blue.png
+    - assets/images/wanderlog_logo.png
+    - assets/images/blue_chat.png
+    - assets/images/image_22.png
+    - assets/images/data_chart.png
+    - assets/images/user_white.png
+    - assets/images/edit_white.png
+    - assets/images/telegram.png
+    - assets/images/manage_packages.png
+    - assets/images/view_sales.png
+    - assets/images/imagenes_wanderlog.png
+    - assets/images/view_sales_selected.png
+    - assets/images/graficos_wanderlog.png
+    - assets/images/manage_packages_selected.png
+    - assets/images/white_setings.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
