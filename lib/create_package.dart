@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:wanderlog_apli/network/continent_service.dart';
-import 'package:wanderlog_apli/network/hotel_service.dart';
-import 'package:wanderlog_apli/network/attraction_service.dart';
-import 'package:wanderlog_apli/network/restaurant_service.dart';
-import 'package:wanderlog_apli/network/flight_service.dart';
-import 'package:wanderlog_apli/models/continent.dart';
-import 'package:wanderlog_apli/models/hotels.dart';
-import 'package:wanderlog_apli/models/attraction.dart';
-import 'package:wanderlog_apli/models/restaurant.dart';
-import 'package:wanderlog_apli/models/flight.dart';
-import 'package:wanderlog_apli/network/travel_package_service.dart';
+import 'package:wanderlog_movil/models/attraction.dart';
+import 'package:wanderlog_movil/models/continent.dart';
+import 'package:wanderlog_movil/models/flight.dart';
+import 'package:wanderlog_movil/models/hotels.dart';
+import 'package:wanderlog_movil/models/restaurant.dart';
+
+import 'package:wanderlog_movil/network/continent_service.dart';
+import 'package:wanderlog_movil/network/travel_package_service.dart';
+
+import 'network/attraction_service.dart';
+import 'network/flight_service.dart';
+import 'network/hotel_service.dart';
+import 'network/restaurant_service.dart';
+
 
 class CreatePackage extends StatefulWidget {
   const CreatePackage({super.key});
