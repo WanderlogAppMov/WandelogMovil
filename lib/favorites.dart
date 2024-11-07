@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wanderlog_movil/PackageDetails.dart';
 import 'package:wanderlog_movil/favorite_manager.dart';
+import 'package:wanderlog_movil/profile.dart';
 
 import 'main_activity_user.dart';
 

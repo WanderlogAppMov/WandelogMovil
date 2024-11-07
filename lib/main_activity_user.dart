@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wanderlog_movil/profile.dart';
+import 'package:wanderlog_movil/search.dart';
 import 'favorites.dart';
 
 
