@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'main_activity_user.dart';
 import 'favorites.dart';
+import 'network/api_client.dart';
 
 class Profile extends StatelessWidget {
+  final ApiClient apiClient;
+
+  Profile({required this.apiClient});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +97,7 @@ class Profile extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainActivity()),
+                    MaterialPageRoute(builder: (context) => MainActivity(apiClient: apiClient)),
                   );
                 },
               ),
@@ -102,7 +107,7 @@ class Profile extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FavoritesScreen()),
+                    MaterialPageRoute(builder: (context) => FavoritesScreen(apiClient: apiClient)),
                   );
                 },
               ),

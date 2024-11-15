@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:wanderlog_movil/PackageDetails.dart';
 import 'package:wanderlog_movil/favorite_manager.dart';
 import 'package:wanderlog_movil/profile.dart';
-
 import 'main_activity_user.dart';
+import 'network/api_client.dart';
 
 class FavoritesScreen extends StatefulWidget {
+  final ApiClient apiClient;
+
+  FavoritesScreen({required this.apiClient});
+
   @override
   _FavoritesScreenState createState() => _FavoritesScreenState();
 }
@@ -59,8 +63,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainActivity()),
-                  );                },
+                    MaterialPageRoute(builder: (context) => MainActivity(apiClient: widget.apiClient)),
+                  );
+                },
               ),
               IconButton(
                 icon: Image.asset('assets/images/iconsaved.png'), // Icono de favoritos personalizado
@@ -71,8 +76,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Profile()),
-                  );                },
+                    MaterialPageRoute(builder: (context) => Profile(apiClient: widget.apiClient)),
+                  );
+                },
               ),
             ],
           ),

@@ -3,7 +3,9 @@ import '../models/TravelPackage.dart';
 import '../network/api_client.dart';
 
 class TravelPackageService {
-  final ApiClient _apiClient = ApiClient();
+  final ApiClient _apiClient;
+
+  TravelPackageService({required ApiClient apiClient}) : _apiClient = apiClient;
 
   Future<List<TravelPackage>> getAllTravelPackages() async {
     final response = await _apiClient.getRequest('api/travelpackages');

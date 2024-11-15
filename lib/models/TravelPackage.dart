@@ -11,7 +11,7 @@ part 'TravelPackage.g.dart';
 class TravelPackage {
   final int travelPackageId;
   final String destination;
-  final Hotel? hotel; // Hazlo opcional
+  final Hotel? hotel;
   final Restaurant? restaurant;
   final Flight? flight;
   final Attraction? attraction;

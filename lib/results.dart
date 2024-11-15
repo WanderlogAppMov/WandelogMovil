@@ -2,20 +2,31 @@ import 'package:flutter/material.dart';
 import 'PackageDetails.dart';
 import 'models/TravelPackage.dart';
 import 'favorite_manager.dart';
-import 'network/travel_package_service.dart'; // Importa el servicio
+import 'network/travel_package_service.dart';
+import 'network/api_client.dart';
 
 class Results extends StatefulWidget {
+  final ApiClient apiClient;
+
+  Results({required this.apiClient});
+
   @override
   _ResultsState createState() => _ResultsState();
 }
 
 class _ResultsState extends State<Results> {
   late String destination;
-  double minPrice = 0; // Valores iniciales válidos
+  double minPrice = 0;
   double maxPrice = double.infinity;
   late String order;
   List<TravelPackage> travelPackages = [];
-  final TravelPackageService _travelPackageService = TravelPackageService();
+  late TravelPackageService _travelPackageService;
+
+  @override
+  void initState() {
+    super.initState();
+    _travelPackageService = TravelPackageService(apiClient: widget.apiClient);
+  }
 
   @override
   void didChangeDependencies() {
@@ -30,7 +41,6 @@ class _ResultsState extends State<Results> {
   Future<List<TravelPackage>> _fetchTravelPackages() async {
     try {
       List<TravelPackage> packages = await _travelPackageService.getAllTravelPackages();
-      print(packages); // Agrega esta línea para inspeccionar la respuesta
       return packages.where((package) {
         final matchesDestination = destination.isEmpty || package.destination.contains(destination);
         final matchesPrice = (package.pricePerStudent ?? 0) >= minPrice && (package.pricePerStudent ?? double.infinity) <= maxPrice;
@@ -38,11 +48,9 @@ class _ResultsState extends State<Results> {
       }).toList();
     } catch (error) {
       print('Error fetching travel packages: $error');
-      throw error; // Asegúrate de lanzar el error para que el FutureBuilder lo maneje
+      throw error;
     }
   }
-
-
 
   void handleFavoriteClick(TravelPackage travelPackage) {
     setState(() {

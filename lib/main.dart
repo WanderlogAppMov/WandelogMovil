@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'network/api_client.dart';
 import 'user_type_starting_selector.dart'; // Pantalla inicial
 import 'search.dart'; // Importa la pantalla de búsqueda
 import 'results.dart'; // Importa la pantalla de resultados
@@ -17,11 +18,14 @@ import 'create_package.dart';
 import 'manage_continents.dart';
 
 void main() {
-  runApp(const MyApp());
+  final apiClient = ApiClient(); // Create an instance of ApiClient
+  runApp(MyApp(apiClient: apiClient));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ApiClient apiClient;
+
+  const MyApp({super.key, required this.apiClient});
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +38,9 @@ class MyApp extends StatelessWidget {
       // Define las rutas de la aplicación
       initialRoute: '/',
       routes: {
-        '/': (context) => UserTypeStartingSelector(), // Pantalla inicial
-        '/search': (context) => Search(), // Ruta para la pantalla de búsqueda
-        '/results': (context) => Results(), // Ruta para la pantalla de resultados
+        '/': (context) => UserTypeStartingSelector(),
+        '/search': (context) => Search(apiClient: apiClient),
+        '/results': (context) => Results(apiClient: apiClient),
         '/userProfileView': (context) => UserProfileView(),
         '/bookingCommunication': (context) => BookingCommunication(),
         '/hotelsEditor': (context) => HotelsEditor(),
@@ -48,7 +52,7 @@ class MyApp extends StatelessWidget {
         '/managePackages': (context) => ManagePackages(),
         '/viewSales': (context) => ViewSales(),
         '/managePackage': (context) => ManagePackage(),
-        '/createTravelPackage': (context) => CreatePackage(),
+        '/createTravelPackage': (context) => CreatePackage(apiClient: apiClient),
         '/continentsEditor': (context) => ContinentsEditor(),
       },
     );

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:wanderlog_movil/profile.dart';
 import 'package:wanderlog_movil/search.dart';
+import 'package:wanderlog_movil/create_package.dart';
 import 'favorites.dart';
-
+import 'network/api_client.dart';
 
 class MainActivity extends StatelessWidget {
+  final ApiClient apiClient;
+
+  MainActivity({required this.apiClient});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +39,7 @@ class MainActivity extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Search()),
+                        MaterialPageRoute(builder: (context) => Search(apiClient: apiClient)),
                       );
                     },
                   ),
@@ -61,6 +66,17 @@ class MainActivity extends StatelessWidget {
                   height: 200,
                 ),
               ),
+              const SizedBox(height: 30),
+              // Botón para crear paquete
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreatePackage(apiClient: apiClient)),
+                  );
+                },
+                child: const Text('Create Package'),
+              ),
             ],
           ),
         ),
@@ -83,7 +99,7 @@ class MainActivity extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FavoritesScreen()),
+                    MaterialPageRoute(builder: (context) => FavoritesScreen(apiClient: apiClient)),
                   );
                 },
               ),
@@ -93,7 +109,7 @@ class MainActivity extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Profile()),
+                    MaterialPageRoute(builder: (context) => Profile(apiClient: apiClient)),
                   );
                 },
               ),

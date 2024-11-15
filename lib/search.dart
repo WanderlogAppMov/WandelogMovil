@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'results.dart';
+import 'network/api_client.dart';
 
 class Search extends StatelessWidget {
+  final ApiClient apiClient;
+
+  Search({required this.apiClient});
+
   final TextEditingController destinationController = TextEditingController();
   final TextEditingController minPriceController = TextEditingController();
   final TextEditingController maxPriceController = TextEditingController();
@@ -128,12 +134,20 @@ class Search extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Acción del botón de búsqueda
-                Navigator.pushNamed(context, '/results', arguments: {
-                  "destination": destinationController.text,
-                  "minPrice": minPriceController.text,
-                  "maxPrice": maxPriceController.text,
-                  "order": selectedOrder,
-                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Results(apiClient: apiClient),
+                    settings: RouteSettings(
+                      arguments: {
+                        "destination": destinationController.text,
+                        "minPrice": minPriceController.text,
+                        "maxPrice": maxPriceController.text,
+                        "order": selectedOrder,
+                      },
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF084DA6),
