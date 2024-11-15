@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wanderlog_movil/login_user.dart';
 import 'main_activity_user.dart';
 import 'main_activity_agency.dart';
 
@@ -43,7 +44,7 @@ class UserTypeStartingSelector extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainActivity()),
+                    MaterialPageRoute(builder: (context) => LoginUser()),
                   );
                 },
                 child: const Text(
