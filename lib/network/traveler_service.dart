@@ -1,5 +1,4 @@
 import 'dart:convert';
-import '../models/traveler.dart';
 import 'api_client.dart';
 
 class TravelerService {
@@ -29,12 +28,15 @@ class TravelerService {
     final response = await _apiClient.postRequest(
       'api/travelers',
       jsonEncode(travelerData),
+      includeAuth: false,
     );
 
     if (response.statusCode == 201 || response.statusCode == 200) {
       print('Traveler registered successfully');
     } else {
       print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      print('Response body: ${response.body}');
+      print('Response headers: ${response.headers}');
       throw Exception('Failed to register traveler');
     }
   }

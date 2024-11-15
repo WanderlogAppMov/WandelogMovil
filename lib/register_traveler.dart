@@ -16,8 +16,25 @@ class _RegisterTravelerState extends State<RegisterTraveler> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TravelerService _travelerService = TravelerService(apiClient: ApiClient());
+  bool _isLoading = false;
 
   void _register() async {
+    if (_firstNameController.text.isEmpty ||
+        _lastNameController.text.isEmpty ||
+        _genderController.text.isEmpty ||
+        _birthdateController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill out all fields')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       await _travelerService.registerTraveler(
         firstName: _firstNameController.text,
@@ -26,7 +43,7 @@ class _RegisterTravelerState extends State<RegisterTraveler> {
         birthdate: _birthdateController.text,
         username: _emailController.text,
         password: _passwordController.text,
-        roles: ['ROLE_USER'],
+        roles: ['ROLE_TRAVELER'],
       );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Traveler registered successfully')),
@@ -36,6 +53,10 @@ class _RegisterTravelerState extends State<RegisterTraveler> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration failed: ${e.toString()}')),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -122,7 +143,7 @@ class _RegisterTravelerState extends State<RegisterTraveler> {
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Username',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -136,7 +157,9 @@ class _RegisterTravelerState extends State<RegisterTraveler> {
                   ),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
                   onPressed: _register,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF034BAC),
