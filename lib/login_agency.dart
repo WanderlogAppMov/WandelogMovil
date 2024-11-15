@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wanderlog_movil/main_activity_agency.dart';
+import 'package:wanderlog_movil/register_agency.dart';
 import 'dart:convert';
 import 'network/api_client.dart';
 
@@ -73,6 +74,10 @@ class _LoginAgencyState extends State<LoginAgency> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterAgency()),
+                      );
                     },
                     child: Text(
                       'Sign up',

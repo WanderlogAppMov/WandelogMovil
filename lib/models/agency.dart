@@ -11,6 +11,7 @@ class Agency {
   final String repreLastName;
   final String contactEmail;
   final String password;
+  final List<String> roles;
 
   Agency({
     required this.agencyId,
@@ -19,6 +20,7 @@ class Agency {
     required this.repreLastName,
     required this.contactEmail,
     required this.password,
+    required this.roles,
   });
 
   factory Agency.fromJson(Map<String, dynamic> json) => _$AgencyFromJson(json);

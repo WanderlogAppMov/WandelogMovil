@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiClient {
@@ -20,14 +19,15 @@ class ApiClient {
     );
   }
 
-  Future<http.Response> postRequest(String endpoint, String body) async {
+  Future<http.Response> postRequest(String endpoint, String body, {bool includeAuth = true}) async {
     final url = Uri.parse(baseUrl + endpoint);
+    final headers = {
+      'Content-Type': 'application/json',
+      if (includeAuth && _token != null) 'Authorization': 'Bearer $_token',
+    };
     return await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Bearer $_token',
-      },
+      headers: headers,
       body: body,
     );
   }
