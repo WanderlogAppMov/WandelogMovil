@@ -37,7 +37,7 @@ class _RegisterAgencyState extends State<RegisterAgency> {
         organizationName: _organizationNameController.text,
         repreFirstName: _repreFirstNameController.text,
         repreLastName: _repreLastNameController.text,
-        contactEmail: _contactEmailController.text,
+        username: _contactEmailController.text,
         password: _passwordController.text,
         roles: ['ROLE_AGENCY'],
       );

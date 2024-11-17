@@ -25,7 +25,8 @@ void main() {
 class MyApp extends StatelessWidget {
   final ApiClient apiClient;
 
-  const MyApp({super.key, required this.apiClient});
+  MyApp({super.key, ApiClient? apiClient})
+      : apiClient = apiClient ?? ApiClient(); // Usa un valor predeterminado si no se pasa nada
 
   @override
   Widget build(BuildContext context) {
@@ -58,3 +59,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+

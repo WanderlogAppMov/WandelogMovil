@@ -10,7 +10,7 @@ class AgencyService {
     required String organizationName,
     required String repreFirstName,
     required String repreLastName,
-    required String contactEmail,
+    required String username,
     required String password,
     required List<String> roles,
   }) async {
@@ -18,7 +18,7 @@ class AgencyService {
       "organizationName": organizationName,
       "repreFirstName": repreFirstName,
       "repreLastName": repreLastName,
-      "contactEmail": contactEmail,
+      "username": username,
       "password": password,
       "roles": roles,
     };
