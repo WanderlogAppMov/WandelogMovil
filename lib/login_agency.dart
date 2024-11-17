@@ -34,6 +34,10 @@ class _LoginAgencyState extends State<LoginAgency> {
     });
 
     if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      _apiClient.setToken(responseData['token']);
+      print('Token configurado: ${responseData['token']}');
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MainActivity2()),
@@ -43,6 +47,7 @@ class _LoginAgencyState extends State<LoginAgency> {
         SnackBar(content: Text('Login failed')),
       );
     }
+
   }
 
   @override

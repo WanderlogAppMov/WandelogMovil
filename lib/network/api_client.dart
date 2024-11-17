@@ -10,48 +10,41 @@ class ApiClient {
 
   Future<http.Response> getRequest(String endpoint) async {
     final url = Uri.parse(baseUrl + endpoint);
-    return await http.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Bearer $_token',
-      },
-    );
+    final headers = {
+      'Content-Type': 'application/json',
+      if (_token != null) 'Authorization': 'Bearer $_token',
+    };
+    print('GET Headers: $headers');
+    return await http.get(url, headers: headers);
   }
 
   Future<http.Response> postRequest(String endpoint, String body, {bool includeAuth = true}) async {
     final url = Uri.parse(baseUrl + endpoint);
     final headers = {
       'Content-Type': 'application/json',
-      if (includeAuth && _token != null) 'Authorization': 'Bearer $_token',
+      if (includeAuth && _token != null) 'Authorization': 'Bearer $_token', // Incluye el prefijo 'Bearer'
     };
-    return await http.post(
-      url,
-      headers: headers,
-      body: body,
-    );
+    print('POST Headers: $headers');
+    return await http.post(url, headers: headers, body: body);
   }
 
   Future<http.Response> putRequest(String endpoint, String body) async {
     final url = Uri.parse(baseUrl + endpoint);
-    return await http.put(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Bearer $_token',
-      },
-      body: body,
-    );
+    final headers = {
+      'Content-Type': 'application/json',
+      if (_token != null) 'Authorization': 'Bearer $_token', // Incluye el prefijo 'Bearer'
+    };
+    print('PUT Headers: $headers');
+    return await http.put(url, headers: headers, body: body);
   }
 
   Future<http.Response> deleteRequest(String endpoint) async {
     final url = Uri.parse(baseUrl + endpoint);
-    return await http.delete(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Bearer $_token',
-      },
-    );
+    final headers = {
+      'Content-Type': 'application/json',
+      if (_token != null) 'Authorization': 'Bearer $_token', // Incluye el prefijo 'Bearer'
+    };
+    print('DELETE Headers: $headers');
+    return await http.delete(url, headers: headers);
   }
 }
