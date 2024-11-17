@@ -1,27 +1,90 @@
 import 'package:flutter/material.dart';
-import 'user_type_starting_selector.dart'; // Pantalla inicial
-import 'search.dart'; // Importa la pantalla de búsqueda
-import 'results.dart'; // Importa la pantalla de resultados
-import 'user_profile_view.dart'; // Importa la pantalla de perfil de usuario
-import 'booking_communication.dart'; // Importa la pantalla de comunicación de reservas
-import 'hotels_editor.dart'; // Importa la pantalla de edición de hoteles
-import 'flights_editor.dart'; // Importa la pantalla de edición de vuelos
-import 'restaurants_editor.dart'; // Importa la pantalla de edición de restaurantes
-import 'attractions_editor.dart'; // Importa la pantalla de edición de atracciones
-import 'packages_editor.dart'; // Importa la pantalla de edición de paquetes
-import 'admin_panel.dart'; // Importa la pantalla de panel de administrador
-import 'manage_packages_activity.dart'; // Importa la pantalla de administración de paquetes
-import 'view_sales.dart'; // Importa la pantalla de visualización de ventas
-import 'manage_package.dart'; // Importa la pantalla de administración de paquetes
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'user_type_starting_selector.dart';
+import 'search.dart';
+import 'results.dart';
+import 'user_profile_view.dart';
+import 'booking_communication.dart';
+import 'hotels_editor.dart';
+import 'flights_editor.dart';
+import 'restaurants_editor.dart';
+import 'attractions_editor.dart';
+import 'packages_editor.dart';
+import 'admin_panel.dart';
+import 'manage_packages_activity.dart';
+import 'view_sales.dart';
+import 'manage_package.dart';
 import 'create_package.dart';
 import 'manage_continents.dart';
 
-void main() {
+// Manejador para mensajes en segundo plano
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Mensaje recibido en segundo plano: ${message.messageId}');
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Suscribirse al topic "all" para recibir notificaciones masivas
+  FirebaseMessaging.instance.subscribeToTopic("all");
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String _notificationMessage = "No hay mensajes"; // Variable para mostrar el mensaje recibido
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeFirebaseMessaging();
+  }
+
+  // Método para configurar Firebase Messaging y obtener el token FCM
+  void _initializeFirebaseMessaging() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Solicitar permisos de notificación
+    NotificationSettings settings = await messaging.requestPermission();
+    print('Permisos de notificación: ${settings.authorizationStatus}');
+
+    // Obtiene el token de FCM para el dispositivo
+    String? token = await messaging.getToken();
+    print("Token de FCM: $token");
+
+    // Maneja mensajes en primer plano
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Mensaje recibido en primer plano: ${message.messageId}');
+
+      // Muestra un Snackbar con el contenido de la notificación
+      if (message.notification != null) {
+        _showSnackbar(message.notification?.title ?? '', message.notification?.body ?? '');
+      }
+    });
+  }
+
+  // Función para mostrar el Snackbar
+  void _showSnackbar(String title, String body) {
+    final snackBar = SnackBar(
+      content: Text('$title: $body'),
+      duration: Duration(seconds: 3), // Duración del Snackbar
+    );
+
+    // Usa ScaffoldMessenger directamente desde el contexto
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +94,21 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // Define las rutas de la aplicación
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Notificaciones Firebase"),
+        ),
+        body: Center(
+          child: Text(
+            _notificationMessage, // Muestra el mensaje en la pantalla
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      ),
       initialRoute: '/',
       routes: {
-        '/': (context) => UserTypeStartingSelector(), // Pantalla inicial
-        '/search': (context) => Search(), // Ruta para la pantalla de búsqueda
-        '/results': (context) => Results(), // Ruta para la pantalla de resultados
+        '/search': (context) => Search(),
+        '/results': (context) => Results(),
         '/userProfileView': (context) => UserProfileView(),
         '/bookingCommunication': (context) => BookingCommunication(),
         '/hotelsEditor': (context) => HotelsEditor(),
