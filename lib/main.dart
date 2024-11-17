@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'network/api_client.dart';
 import 'user_type_starting_selector.dart'; // Pantalla inicial
 import 'search.dart'; // Importa la pantalla de búsqueda
@@ -17,8 +19,20 @@ import 'manage_package.dart'; // Importa la pantalla de administración de paque
 import 'create_package.dart';
 import 'manage_continents.dart';
 
-void main() {
-  final apiClient = ApiClient(); // Create an instance of ApiClient
+// Manejador para mensajes en segundo plano
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Mensaje recibido en segundo plano: ${message.messageId}');
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Suscribirse al topic "all" para recibir notificaciones masivas
+  FirebaseMessaging.instance.subscribeToTopic("all");
+
+  final apiClient = ApiClient(); // Instancia de ApiClient
   runApp(MyApp(apiClient: apiClient));
 }
 
@@ -26,7 +40,7 @@ class MyApp extends StatelessWidget {
   final ApiClient apiClient;
 
   MyApp({super.key, ApiClient? apiClient})
-      : apiClient = apiClient ?? ApiClient(); // Usa un valor predeterminado si no se pasa nada
+      : apiClient = apiClient ?? ApiClient();
 
   @override
   Widget build(BuildContext context) {
@@ -60,4 +74,23 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Inicializar y configurar Firebase Messaging
+void initializeFirebaseMessaging() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+  // Solicitar permisos de notificación
+  NotificationSettings settings = await messaging.requestPermission();
+  print('Permisos de notificación: ${settings.authorizationStatus}');
+
+  // Obtener el token de FCM para el dispositivo
+  String? token = await messaging.getToken();
+  print("Token de FCM: $token");
+
+  // Manejar mensajes en primer plano
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Mensaje recibido en primer plano: ${message.messageId}');
+    if (message.notification != null) {
+      print('Notificación: ${message.notification?.title} - ${message.notification?.body}');
+    }
+  });
+}
