@@ -20,54 +20,30 @@ class _LoginUserState extends State<LoginUser> {
       _isLoading = true;
     });
 
-    try {
-      final response = await _apiClient.postRequest(
-        'api/authentication/sign-in',
-        jsonEncode(<String, String>{
-          'username': _usernameController.text,
-          'password': _passwordController.text,
-        }),
+    final response = await _apiClient.postRequest(
+      'api/authentication/sign-in',
+      jsonEncode(<String, String>{
+        'username': _usernameController.text,
+        'password': _passwordController.text,
+        'role': 'ROLE_USER',
+      }),
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      _apiClient.setToken(responseData['token']);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainActivity(apiClient: _apiClient)),
       );
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        print('Response Data: $responseData'); // Log the response data
-
-        if (responseData.containsKey('roles')) {
-          final roles = List<String>.from(responseData['roles']);
-          print('Roles: $roles'); // Log the roles
-
-          if (roles.contains('ROLE_TRAVELER')) {
-            _apiClient.setToken(responseData['token']);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MainActivity(apiClient: _apiClient)),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Access denied: Only travelers can log in')),
-            );
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login failed: No roles found')),
-          );
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed: ${response.reasonPhrase}')),
-        );
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: ${e.toString()}')),
+        SnackBar(content: Text('Login failed')),
       );
     }
   }
@@ -164,6 +140,7 @@ class _LoginUserState extends State<LoginUser> {
                 ),
               ),
               SizedBox(height: 10),
+
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
