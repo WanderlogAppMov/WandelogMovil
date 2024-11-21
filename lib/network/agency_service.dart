@@ -38,4 +38,29 @@ class AgencyService {
       throw Exception('Failed to register agency');
     }
   }
+  Future<Map<String, dynamic>> getProfileById(String id) async {
+    final response = await _apiClient.getRequest('api/travelagencies/$id/profile');
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to load profile');
+    }
+  }
+
+  Future<void> updateProfileById(String agencyId, Map<String, String> profileData) async {
+    final response = await _apiClient.putRequest(
+      'api/agencies/$agencyId',
+      jsonEncode(profileData),
+    );
+
+    if (response.statusCode == 200) {
+      print('Profile updated successfully');
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to update profile');
+    }
+  }
 }
