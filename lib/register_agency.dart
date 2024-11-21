@@ -15,6 +15,7 @@ class _RegisterAgencyState extends State<RegisterAgency> {
   final TextEditingController _passwordController = TextEditingController();
   final AgencyService _agencyService = AgencyService(apiClient: ApiClient());
   bool _isLoading = false;
+  bool _acceptedTerms = false;
 
   void _register() async {
     if (_organizationNameController.text.isEmpty ||
@@ -24,6 +25,13 @@ class _RegisterAgencyState extends State<RegisterAgency> {
         _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill out all fields')),
+      );
+      return;
+    }
+
+    if (!_acceptedTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('You must accept the terms and conditions')),
       );
       return;
     }
@@ -54,6 +62,42 @@ class _RegisterAgencyState extends State<RegisterAgency> {
         _isLoading = false;
       });
     }
+  }
+
+  void _showTermsAndConditions() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Terms and Conditions'),
+          content: SingleChildScrollView(
+            child: Text(
+                'Terms and Conditions\n\n'
+                    '1. Introduction\n'
+                    'Welcome to WanderLog. By registering as an agency, you agree to comply with and be bound by the following terms and conditions.\n\n'
+                    '2. Use of Service\n'
+                    'You agree to use the service only for lawful purposes and in a way that does not infringe the rights of others or restrict their use of the service.\n\n'
+                    '3. Account Security\n'
+                    'You are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer.\n\n'
+                    '4. Termination\n'
+                    'We reserve the right to terminate your account at any time if you violate these terms and conditions.\n\n'
+                    '5. Changes to Terms\n'
+                    'We may update these terms and conditions from time to time. Your continued use of the service will be deemed acceptance of the updated terms.\n\n'
+                    '6. Contact Us\n'
+                    'If you have any questions about these terms and conditions, please contact us at support@wanderlog.com.'
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -129,6 +173,29 @@ class _RegisterAgencyState extends State<RegisterAgency> {
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                   ),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _acceptedTerms,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _acceptedTerms = value ?? false;
+                        });
+                      },
+                    ),
+                    GestureDetector(
+                      onTap: _showTermsAndConditions,
+                      child: Text(
+                        'I accept the terms and conditions',
+                        style: TextStyle(
+                          color: Color(0xFF034BAC),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
                 _isLoading

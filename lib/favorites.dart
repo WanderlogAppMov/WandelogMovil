@@ -7,8 +7,9 @@ import 'network/api_client.dart';
 
 class FavoritesScreen extends StatefulWidget {
   final ApiClient apiClient;
+  final String userId;
 
-  FavoritesScreen({required this.apiClient});
+  FavoritesScreen({required this.apiClient, required this.userId});
 
   @override
   _FavoritesScreenState createState() => _FavoritesScreenState();
@@ -62,7 +63,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainActivity(apiClient: widget.apiClient)),
+                    MaterialPageRoute(builder: (context) => MainActivity(apiClient: widget.apiClient, userId: widget.userId)),
                   );
                 },
               ),
@@ -75,7 +76,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Profile(apiClient: widget.apiClient)),
+                    MaterialPageRoute(builder: (context) => Profile(apiClient: widget.apiClient, userId: widget.userId)),
                   );
                 },
               ),

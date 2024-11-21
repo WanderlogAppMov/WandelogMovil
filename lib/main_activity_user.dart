@@ -7,8 +7,9 @@ import 'network/api_client.dart';
 
 class MainActivity extends StatelessWidget {
   final ApiClient apiClient;
+  final String userId;
 
-  MainActivity({required this.apiClient});
+  MainActivity({required this.apiClient, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +100,7 @@ class MainActivity extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FavoritesScreen(apiClient: apiClient)),
+                    MaterialPageRoute(builder: (context) => FavoritesScreen(apiClient: apiClient, userId: userId)),
                   );
                 },
               ),
@@ -109,7 +110,7 @@ class MainActivity extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Profile(apiClient: apiClient)),
+                    MaterialPageRoute(builder: (context) => Profile(apiClient: apiClient, userId: userId)),
                   );
                 },
               ),

@@ -40,4 +40,31 @@ class TravelerService {
       throw Exception('Failed to register traveler');
     }
   }
+  Future<Map<String, dynamic>> getProfileById(String id) async {
+    final response = await _apiClient.getRequest('api/travelers/$id/profile');
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to load profile');
+    }
+  }
+  Future<void> updateProfileById(String userId, Map<String, String> profileData) async {
+    // Ensure the userId is included in the profileData
+    profileData['userId'] = userId;
+
+    final response = await _apiClient.putRequest(
+      'api/travelers/$userId',
+      jsonEncode(profileData),
+    );
+
+    if (response.statusCode == 200) {
+      print('Profile updated successfully');
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to update profile');
+    }
+  }
 }
