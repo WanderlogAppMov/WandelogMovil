@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:wanderlog_apli/network/continent_service.dart';
-import 'package:wanderlog_apli/network/hotel_service.dart';
-import 'package:wanderlog_apli/network/attraction_service.dart';
-import 'package:wanderlog_apli/network/restaurant_service.dart';
-import 'package:wanderlog_apli/network/flight_service.dart';
-import 'package:wanderlog_apli/models/continent.dart';
-import 'package:wanderlog_apli/models/hotels.dart';
-import 'package:wanderlog_apli/models/attraction.dart';
-import 'package:wanderlog_apli/models/restaurant.dart';
-import 'package:wanderlog_apli/models/flight.dart';
-import 'package:wanderlog_apli/network/travel_package_service.dart';
+import 'package:wanderlog_movil/models/attraction.dart';
+import 'package:wanderlog_movil/models/continent.dart';
+import 'package:wanderlog_movil/models/flight.dart';
+import 'package:wanderlog_movil/models/hotels.dart';
+import 'package:wanderlog_movil/models/restaurant.dart';
+
+import 'package:wanderlog_movil/network/continent_service.dart';
+import 'package:wanderlog_movil/network/travel_package_service.dart';
+
+import 'network/attraction_service.dart';
+import 'network/flight_service.dart';
+import 'network/hotel_service.dart';
+import 'network/restaurant_service.dart';
+import 'network/api_client.dart';
 
 class CreatePackage extends StatefulWidget {
-  const CreatePackage({super.key});
+  final ApiClient apiClient;
+
+  const CreatePackage({super.key, required this.apiClient});
 
   @override
   _CreatePackageState createState() => _CreatePackageState();
@@ -87,210 +92,209 @@ class _CreatePackageState extends State<CreatePackage> {
   void _validateIfAllAreSelected() {
     setState(() {
       _completed = _selectedHotel != null &&
-        _selectedAttraction != null &&
-        _selectedRestaurant != null &&
-        _selectedFlight != null &&
-        _destination != "";
+          _selectedAttraction != null &&
+          _selectedRestaurant != null &&
+          _selectedFlight != null &&
+          _destination != "";
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF034BAC),
-      appBar: AppBar(title: Text('Create Package')),
-      body: Center (
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-              TextField(
-                style: const TextStyle(color: Colors.white),
-                onChanged: (value) {
-                  setState(() {
-                    _destination = value;
-                    _validateIfAllAreSelected();
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: 'Enter the name of the Package',
-                  hintStyle: TextStyle(color: Colors.white60),
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                ),
-              ),
-              const SizedBox(height: 20),
-              DropdownButton<Continent>(
-                hint: const Text(
-                  "Select Continent",
-                  style: TextStyle(color: Colors.white60),
-                ),
-                value: _selectedContinent,
-                items: _continents.map((continent) {
-                  return DropdownMenuItem<Continent>(
-                    value: continent,
-                    child: Text(
-                      continent.continentName,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (continent) {
-                  setState(() {
-                    _selectedContinent = continent;
-                    _validateIfAllAreSelected();
-                  });
-                  if (continent != null) {
-                    _loadDataByContinent(continent.continentID);
-                  }
-                },
-                dropdownColor: Colors.black,
-              ),
-              const SizedBox(height: 20),
-              DropdownButton<Hotel>(
-                hint: const Text(
-                  "Select Hotel",
-                  style: TextStyle(color: Colors.white60),
-                ),
-                value: _selectedHotel,
-                items: _hotels.map((hotel) {
-                  return DropdownMenuItem<Hotel>(
-                    value: hotel,
-                    child: Text(
-                      hotel.hotelName,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (hotel) {
-                  setState(() {
-                    _selectedHotel = hotel;
-                    _validateIfAllAreSelected();
-                  });
-                },
-                dropdownColor: Colors.black,
-              ),
-              const SizedBox(height: 10),
-              DropdownButton<Attraction>(
-                hint: const Text(
-                  "Select Attraction",
-                  style: TextStyle(color: Colors.white60),
-                ),
-                value: _selectedAttraction,
-                items: _attractions.map((attraction) {
-                  return DropdownMenuItem<Attraction>(
-                    value: attraction,
-                    child: Text(
-                      attraction.attractionName,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (attraction) {
-                  setState(() {
-                    _selectedAttraction = attraction;
-                    _validateIfAllAreSelected();
-                  });
-                },
-                dropdownColor: Colors.black,
-              ),
-              const SizedBox(height: 10),
-              DropdownButton<Restaurant>(
-                hint: const Text(
-                  "Select Restaurant",
-                  style: TextStyle(color: Colors.white60),
-                ),
-                value: _selectedRestaurant,
-                items: _restaurants.map((restaurant) {
-                  return DropdownMenuItem<Restaurant>(
-                    value: restaurant,
-                    child: Text(
-                      restaurant.restaurantName,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (restaurant) {
-                  setState(() {
-                    _selectedRestaurant = restaurant;
-                    _validateIfAllAreSelected();
-                  });
-                },
-                dropdownColor: Colors.black,
-              ),
-              const SizedBox(height: 10),
-              DropdownButton<Flight>(
-                hint: const Text(
-                  "Select Flight",
-                  style: TextStyle(color: Colors.white60),
-                ),
-                value: _selectedFlight,
-                items: _flights.map((flight) {
-                  return DropdownMenuItem<Flight>(
-                    value: flight,
-                    child: Text(
-                      flight.airline,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (flight) {
-                  setState(() {
-                    _selectedFlight = flight;
-                    _validateIfAllAreSelected();
-                  });
-                },
-                dropdownColor: Colors.black,
-              ),
-              const SizedBox(height: 20),
-              _completed?ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFB4C8E6),
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                ),
-                child: const Text('Create Travel Package', style: TextStyle(color: Colors.black)),
-                onPressed: () async {
-                  try {
+        backgroundColor: Color(0xFF034BAC),
+        appBar: AppBar(title: Text('Create Package')),
+        body: Center (
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                TextField(
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: (value) {
                     setState(() {
-                      _disabled = true;
+                      _destination = value;
+                      _validateIfAllAreSelected();
                     });
-                    await TravelPackageService()
-                        .createTravelPackage(
-                        destination: _destination,
-                        hotelId: _selectedHotel!.hotelId,
-                        restaurantId: _selectedRestaurant!.restaurantId,
-                        flightId: _selectedFlight!.flightId,
-                        attractionId: _selectedAttraction!.attractionId,
-                        pricePerStudent:
-                        _selectedHotel!.pricePerNight +
-                            _selectedFlight!.price * 2 +
-                            _selectedAttraction!.ticketPrice,
-                        agencyId: 1,
-                        continent: _selectedContinent!.continentName
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Enter the name of the Package',
+                    hintStyle: TextStyle(color: Colors.white60),
+                    filled: true,
+                    fillColor: Colors.transparent,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                DropdownButton<Continent>(
+                  hint: const Text(
+                    "Select Continent",
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                  value: _selectedContinent,
+                  items: _continents.map((continent) {
+                    return DropdownMenuItem<Continent>(
+                      value: continent,
+                      child: Text(
+                        continent.continentName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Package successfully created!")),
+                  }).toList(),
+                  onChanged: (continent) {
+                    setState(() {
+                      _selectedContinent = continent;
+                      _validateIfAllAreSelected();
+                    });
+                    if (continent != null) {
+                      _loadDataByContinent(continent.continentID);
+                    }
+                  },
+                  dropdownColor: Colors.black,
+                ),
+                const SizedBox(height: 20),
+                DropdownButton<Hotel>(
+                  hint: const Text(
+                    "Select Hotel",
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                  value: _selectedHotel,
+                  items: _hotels.map((hotel) {
+                    return DropdownMenuItem<Hotel>(
+                      value: hotel,
+                      child: Text(
+                        hotel.hotelName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     );
-                    Navigator.of(context).pop();
-                  } catch (error){
-                    setState(() { _disabled = false; });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Failed to create a package")),
+                  }).toList(),
+                  onChanged: (hotel) {
+                    setState(() {
+                      _selectedHotel = hotel;
+                      _validateIfAllAreSelected();
+                    });
+                  },
+                  dropdownColor: Colors.black,
+                ),
+                const SizedBox(height: 10),
+                DropdownButton<Attraction>(
+                  hint: const Text(
+                    "Select Attraction",
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                  value: _selectedAttraction,
+                  items: _attractions.map((attraction) {
+                    return DropdownMenuItem<Attraction>(
+                      value: attraction,
+                      child: Text(
+                        attraction.attractionName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     );
-                  }
-                },
-              ):const SizedBox(height: 0)
-            ],
+                  }).toList(),
+                  onChanged: (attraction) {
+                    setState(() {
+                      _selectedAttraction = attraction;
+                      _validateIfAllAreSelected();
+                    });
+                  },
+                  dropdownColor: Colors.black,
+                ),
+                const SizedBox(height: 10),
+                DropdownButton<Restaurant>(
+                  hint: const Text(
+                    "Select Restaurant",
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                  value: _selectedRestaurant,
+                  items: _restaurants.map((restaurant) {
+                    return DropdownMenuItem<Restaurant>(
+                      value: restaurant,
+                      child: Text(
+                        restaurant.restaurantName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (restaurant) {
+                    setState(() {
+                      _selectedRestaurant = restaurant;
+                      _validateIfAllAreSelected();
+                    });
+                  },
+                  dropdownColor: Colors.black,
+                ),
+                const SizedBox(height: 10),
+                DropdownButton<Flight>(
+                  hint: const Text(
+                    "Select Flight",
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                  value: _selectedFlight,
+                  items: _flights.map((flight) {
+                    return DropdownMenuItem<Flight>(
+                      value: flight,
+                      child: Text(
+                        flight.airline,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (flight) {
+                    setState(() {
+                      _selectedFlight = flight;
+                      _validateIfAllAreSelected();
+                    });
+                  },
+                  dropdownColor: Colors.black,
+                ),
+                const SizedBox(height: 20),
+                _completed?ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFB4C8E6),
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  ),
+                  child: const Text('Create Travel Package', style: TextStyle(color: Colors.black)),
+                  onPressed: () async {
+                    try {
+                      setState(() {
+                        _disabled = true;
+                      });
+                      await TravelPackageService(apiClient: widget.apiClient)
+                          .createTravelPackage(
+                          destination: _destination,
+                          hotelId: _selectedHotel!.hotelId,
+                          restaurantId: _selectedRestaurant!.restaurantId,
+                          flightId: _selectedFlight!.flightId,
+                          attractionId: _selectedAttraction!.attractionId,
+                          pricePerStudent:
+                          _selectedHotel!.pricePerNight +
+                              _selectedFlight!.price * 2 +
+                              _selectedAttraction!.ticketPrice,
+                          continent: _selectedContinent!.continentName
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Package successfully created!")),
+                      );
+                      Navigator.of(context).pop();
+                    } catch (error){
+                      setState(() { _disabled = false; });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Failed to create a package")),
+                      );
+                    }
+                  },
+                ):const SizedBox(height: 0)
+              ],
+            ),
           ),
-        ),
-      )
+        )
     );
   }
 }

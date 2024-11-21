@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:reviews_attempt3/models/list_reviews.dart';
-import 'package:reviews_attempt3/utils/dbservice.dart';
+import 'package:wanderlog_movil/utils/dbservice.dart';
+import 'models/list_reviews.dart';
 
 class ReviewDialog extends StatefulWidget {
   final ListReviews review;
   final bool isNew;
+  final int travelPackageId;
 
-  ReviewDialog({required this.review, required this.isNew});
+  ReviewDialog({required this.review, required this.isNew, required this.travelPackageId});
 
   @override
   _ReviewDialogState createState() => _ReviewDialogState();
@@ -24,7 +25,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
 
     if (!widget.isNew) {
       txtDescription.text = widget.review.description ?? '';
-      rating = int.tryParse(widget.review.rating as String? ?? '0') ?? 0;
+      rating = widget.review.rating ?? 0;
     }
   }
 
@@ -95,7 +96,8 @@ class _ReviewDialogState extends State<ReviewDialog> {
                   ),
                   onPressed: () async {
                     widget.review.description = txtDescription.text;
-                    widget.review.rating = int.tryParse(rating.toString()) ?? 0;
+                    widget.review.rating = rating;
+                    widget.review.travelPackageId = widget.travelPackageId;
 
                     await dbservice.openDb();
                     if (widget.isNew) {

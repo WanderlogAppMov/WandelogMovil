@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:reviews_attempt3/models/list_reviews.dart';
+import '../models/list_reviews.dart';
 
 class Dbservice {
   Database? db;
@@ -23,6 +23,7 @@ class Dbservice {
     await db.execute('''
     CREATE TABLE reviews(
       id INTEGER PRIMARY KEY,
+      travelPackageId INTEGER,
       rating INTEGER,
       description TEXT
     )
@@ -37,14 +38,14 @@ class Dbservice {
     await db!.delete('reviews', where: 'id = ?', whereArgs: [review.id]);
   }
 
-  Future<List<ListReviews>> getReviews() async {
-    final List<Map<String, dynamic>> maps = await db!.query('reviews');
+  Future<List<ListReviews>> getReviewsByTravelPackageId(int travelPackageId) async {
+    final List<Map<String, dynamic>> maps = await db!.query(
+      'reviews',
+      where: 'travelPackageId = ?',
+      whereArgs: [travelPackageId],
+    );
     return List.generate(maps.length, (i) {
-      return ListReviews(
-        maps[i]['id'],
-        maps[i]['rating'], // Directly assign as int
-        maps[i]['description'],
-      );
+      return ListReviews.fromMap(maps[i]);
     });
   }
 

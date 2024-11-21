@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wanderlog_apli/models/attraction.dart';
-import 'package:wanderlog_apli/models/continent.dart';
-import 'package:wanderlog_apli/network/attraction_service.dart';
-import 'package:wanderlog_apli/network/continent_service.dart';
+import 'package:wanderlog_movil/models/attraction.dart';
+import 'package:wanderlog_movil/models/continent.dart';
+import 'package:wanderlog_movil/network/attraction_service.dart';
+import 'package:wanderlog_movil/network/continent_service.dart';
 
 class AttractionsEditor extends StatefulWidget {
   @override

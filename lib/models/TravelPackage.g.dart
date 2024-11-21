@@ -23,8 +23,8 @@ TravelPackage _$TravelPackageFromJson(Map<String, dynamic> json) =>
           ? null
           : Attraction.fromJson(json['attraction'] as Map<String, dynamic>),
       pricePerStudent: (json['pricePerStudent'] as num).toDouble(),
-      agency: Agency.fromJson(json['agency'] as Map<String, dynamic>),
       continent: json['continent'] as String,
+      reserved: (json['reserved'] as num).toInt(),
     );
 
 Map<String, dynamic> _$TravelPackageToJson(TravelPackage instance) =>
@@ -36,6 +36,6 @@ Map<String, dynamic> _$TravelPackageToJson(TravelPackage instance) =>
       'flight': instance.flight,
       'attraction': instance.attraction,
       'pricePerStudent': instance.pricePerStudent,
-      'agency': instance.agency,
       'continent': instance.continent,
+      'reserved': instance.reserved,
     };

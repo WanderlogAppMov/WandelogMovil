@@ -3,7 +3,9 @@ import '../models/TravelPackage.dart';
 import '../network/api_client.dart';
 
 class TravelPackageService {
-  final ApiClient _apiClient = ApiClient();
+  final ApiClient _apiClient;
+
+  TravelPackageService({required ApiClient apiClient}) : _apiClient = apiClient;
 
   Future<List<TravelPackage>> getAllTravelPackages() async {
     final response = await _apiClient.getRequest('api/travelpackages');
@@ -22,7 +24,6 @@ class TravelPackageService {
     required int flightId,
     required int attractionId,
     required double pricePerStudent,
-    required int agencyId,
     required String continent,
   }) async {
     final packageData = {
@@ -32,7 +33,6 @@ class TravelPackageService {
       "flightId": flightId,
       "attractionId": attractionId,
       "pricePerStudent": pricePerStudent,
-      "agencyId": agencyId,
       "continent": continent,
     };
     final response = await _apiClient.postRequest(
@@ -46,4 +46,45 @@ class TravelPackageService {
       throw Exception('Failed to create travel package');
     }
   }
+
+  Future<void> updateTravelPackage({
+    required int travelPackageId,
+    required int reserved,
+  }) async {
+    final updateData = {
+      "reserved": reserved, // Enviar el nuevo estado de reserved
+    };
+
+    final response = await _apiClient.putRequest(
+      'api/travelpackages/$travelPackageId', // URL correcta con ID
+      jsonEncode(updateData),
+    );
+
+    if (response.statusCode == 200) {
+      print('Travel package updated successfully');
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception('Failed to update travel package');
+    }
+  }
+
+  Future<void> updateTravelPackageFull({
+    required int travelPackageId,
+    required String body, // Ahora recibe un JSON String directamente
+  }) async {
+    final response = await _apiClient.putRequest(
+      'api/travelpackages/$travelPackageId', // URL con el ID
+      body, // Pasa el JSON String directamente
+    );
+
+    if (response.statusCode == 200) {
+      print('Travel package updated successfully');
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception('Failed to update travel package');
+    }
+  }
+
+
+
 }

@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:reviews_attempt3/UI/review_dialog.dart';
-import '../models/list_reviews.dart';
+import 'package:wanderlog_movil/utils/dbservice.dart';
+import 'models/list_reviews.dart';
+import 'review_dialog.dart';
 
 class ReviewsScreen extends StatelessWidget {
+  final int travelPackageId;
+  final String travelPackageName;
   final List<ListReviews> reviews;
 
-  ReviewsScreen({required this.reviews});
+  const ReviewsScreen({
+    Key? key,
+    required this.travelPackageId,
+    required this.travelPackageName,
+    required this.reviews,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +38,13 @@ class ReviewsScreen extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'Student Adventure in Cusco',
+                travelPackageName,
                 style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(height: 16.0),
             // Display average rating with stars
-            AverageRatingDisplay(averageRating: averageRating, reviewCount: reviews.length),
+            _buildAverageRatingDisplay(averageRating, reviews.length),
             SizedBox(height: 16.0),
 
             // "Write a Review" Button
@@ -50,8 +58,10 @@ class ReviewsScreen extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return ReviewDialog(
-                        review: ListReviews(0, 0, ''), // Pass a new review object
+                        review: ListReviews(null, travelPackageId, 0, ''), // Pass a new review object with travelPackageId
                         isNew: true,
+                        travelPackageId: travelPackageId,
+                        travelPackageName: travelPackageName,
                       );
                     },
                   );
@@ -73,7 +83,7 @@ class ReviewsScreen extends StatelessWidget {
                   ? ListView.builder(
                 itemCount: reviews.length,
                 itemBuilder: (context, index) {
-                  return ReviewItem(review: reviews[index]);
+                  return _buildReviewItem(reviews[index]);
                 },
               )
                   : Center(
@@ -88,23 +98,8 @@ class ReviewsScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-extension on double {
-  get fontWeight => null;
-}
-
-class AverageRatingDisplay extends StatelessWidget {
-  final double averageRating;
-  final int reviewCount;
-
-  const AverageRatingDisplay({
-    required this.averageRating,
-    required this.reviewCount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildAverageRatingDisplay(double averageRating, int reviewCount) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -135,15 +130,8 @@ class AverageRatingDisplay extends StatelessWidget {
       ],
     );
   }
-}
 
-class ReviewItem extends StatelessWidget {
-  final ListReviews review;
-
-  const ReviewItem({required this.review});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildReviewItem(ListReviews review) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(

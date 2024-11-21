@@ -13,6 +13,7 @@ Agency _$AgencyFromJson(Map<String, dynamic> json) => Agency(
       repreLastName: json['repreLastName'] as String,
       contactEmail: json['contactEmail'] as String,
       password: json['password'] as String,
+      roles: (json['roles'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$AgencyToJson(Agency instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$AgencyToJson(Agency instance) => <String, dynamic>{
       'repreLastName': instance.repreLastName,
       'contactEmail': instance.contactEmail,
       'password': instance.password,
+      'roles': instance.roles,
     };
