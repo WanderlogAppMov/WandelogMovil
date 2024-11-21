@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 
 class ApiClient {
-  static const String baseUrl = 'https://35ce-38-172-129-244.ngrok-free.app/';
+  static const String baseUrl = 'https://wanderlogbackend-ggd6esgxhuddhvb2.canadacentral-01.azurewebsites.net/';
   String? _token;
 
   void setToken(String token) {

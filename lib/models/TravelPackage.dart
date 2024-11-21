@@ -16,8 +16,8 @@ class TravelPackage {
   final Flight? flight;
   final Attraction? attraction;
   final double pricePerStudent;
-  final Agency agency;
   final String continent;
+  final int reserved;
 
   TravelPackage({
     required this.travelPackageId,
@@ -27,8 +27,8 @@ class TravelPackage {
     required this.flight,
     required this.attraction,
     required this.pricePerStudent,
-    required this.agency,
     required this.continent,
+    required this.reserved,
   });
 
   factory TravelPackage.fromJson(Map<String, dynamic> json) => _$TravelPackageFromJson(json);

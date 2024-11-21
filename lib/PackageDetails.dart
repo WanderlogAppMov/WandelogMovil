@@ -1,10 +1,83 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'models/TravelPackage.dart';
+import 'network/api_client.dart';
+import 'network/travel_package_service.dart'; // Tu cliente API para interactuar con el backend
 
-class PackageDetails extends StatelessWidget {
+class PackageDetails extends StatefulWidget {
   final TravelPackage travelPackage;
 
   PackageDetails({required this.travelPackage});
+
+  @override
+  _PackageDetailsState createState() => _PackageDetailsState();
+}
+
+class _PackageDetailsState extends State<PackageDetails> {
+  late TravelPackage travelPackage;
+
+  @override
+  void initState() {
+    super.initState();
+    travelPackage = widget.travelPackage;
+  }
+
+  Future<void> _toggleReservation() async {
+    final service = TravelPackageService(apiClient: ApiClient());
+
+    try {
+      // Determina el nuevo estado basado en el actual
+      final newReservedState = travelPackage.reserved == 0 ? 1 : 0;
+
+      // Construye el JSON completo para la solicitud
+      final updateData = {
+        "destination": travelPackage.destination,
+        "hotelId": travelPackage.hotel?.hotelId ?? 0,
+        "restaurantId": travelPackage.restaurant?.restaurantId ?? 0,
+        "flightId": travelPackage.flight?.flightId ?? 0,
+        "attractionId": travelPackage.attraction?.attractionId ?? 0,
+        "pricePerStudent": travelPackage.pricePerStudent,
+        "continent": travelPackage.continent,
+        "reserved": newReservedState, // Cambia el estado a reservado o disponible
+      };
+
+      // Convierte `updateData` a String
+      final body = jsonEncode(updateData);
+
+      // Llama al servicio para actualizar el paquete
+      await service.updateTravelPackageFull(
+        travelPackageId: travelPackage.travelPackageId,
+        body: body, // Pasa el JSON como String
+      );
+
+      // Si la actualización fue exitosa, actualiza el estado localmente
+      setState(() {
+        travelPackage = TravelPackage(
+          travelPackageId: travelPackage.travelPackageId,
+          destination: travelPackage.destination,
+          hotel: travelPackage.hotel,
+          restaurant: travelPackage.restaurant,
+          flight: travelPackage.flight,
+          attraction: travelPackage.attraction,
+          pricePerStudent: travelPackage.pricePerStudent,
+          continent: travelPackage.continent,
+          reserved: newReservedState, // Actualiza el estado local
+        );
+      });
+
+      print('Package updated successfully.');
+    } catch (e) {
+      print('Error updating reservation: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update reservation.')),
+      );
+    }
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +120,20 @@ class PackageDetails extends StatelessWidget {
             Text(
               '\$${travelPackage.pricePerStudent.toStringAsFixed(2)} per traveler',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 16),
+            // Botón de disponibilidad
+            ElevatedButton(
+              onPressed: _toggleReservation,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: travelPackage.reserved == 0
+                    ? Colors.green
+                    : Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(travelPackage.reserved == 0
+                  ? 'Disponible'
+                  : 'Reservado'),
             ),
             SizedBox(height: 16),
             // Grid con botones para detalles adicionales
@@ -114,7 +201,6 @@ class PackageDetails extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Icono sin bordes redondeados
                     Image.asset(
                       iconPath,
                       width: 80,
@@ -126,7 +212,6 @@ class PackageDetails extends StatelessWidget {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 16),
-                    // Detalles del item en estilo de lista
                     Container(
                       padding: const EdgeInsets.all(12.0),
                       decoration: BoxDecoration(
@@ -140,7 +225,6 @@ class PackageDetails extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    // Botón de cierre con texto en blanco
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();

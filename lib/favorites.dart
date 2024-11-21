@@ -32,7 +32,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           final travelPackage = favoritePackages[index];
           return ListTile(
             title: Text(travelPackage.destination),
-            subtitle: Text("${travelPackage.continent}, ${travelPackage.agency.organizationName}"),
             trailing: IconButton(
               icon: Icon(Icons.favorite, color: Colors.red),
               onPressed: () {

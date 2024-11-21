@@ -277,7 +277,6 @@ class _CreatePackageState extends State<CreatePackage> {
                           _selectedHotel!.pricePerNight +
                               _selectedFlight!.price * 2 +
                               _selectedAttraction!.ticketPrice,
-                          agencyId: 1,
                           continent: _selectedContinent!.continentName
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
