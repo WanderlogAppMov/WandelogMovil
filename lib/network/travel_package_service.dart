@@ -47,26 +47,7 @@ class TravelPackageService {
     }
   }
 
-  Future<void> updateTravelPackage({
-    required int travelPackageId,
-    required int reserved,
-  }) async {
-    final updateData = {
-      "reserved": reserved, // Enviar el nuevo estado de reserved
-    };
 
-    final response = await _apiClient.putRequest(
-      'api/travelpackages/$travelPackageId', // URL correcta con ID
-      jsonEncode(updateData),
-    );
-
-    if (response.statusCode == 200) {
-      print('Travel package updated successfully');
-    } else {
-      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
-      throw Exception('Failed to update travel package');
-    }
-  }
 
   Future<void> updateTravelPackageFull({
     required int travelPackageId,
@@ -84,7 +65,46 @@ class TravelPackageService {
       throw Exception('Failed to update travel package');
     }
   }
+  Future<void> deleteTravelPackage(int id) async {
+    final response = await _apiClient.deleteRequest('api/travelpackages/$id');
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      print('Travel package deleted successfully');
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception('Failed to delete travel package');
+    }
+  }
 
+  Future<void> updateTravelPackage({
+    required int id,
+    required String destination,
+    required int hotelId,
+    required int restaurantId,
+    required int flightId,
+    required int attractionId,
+    required double pricePerStudent,
+    required String continent,
+  }) async {
+    final packageData = {
+      "destination": destination,
+      "hotelId": hotelId,
+      "restaurantId": restaurantId,
+      "flightId": flightId,
+      "attractionId": attractionId,
+      "pricePerStudent": pricePerStudent,
+      "continent": continent,
+    };
+    final response = await _apiClient.putRequest(
+      'api/travelpackages/$id',
+      jsonEncode(packageData),
+    );
+    if (response.statusCode == 200) {
+      print('Travel package updated successfully');
+    } else {
+      print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception('Failed to update travel package');
+    }
+  }
 
 
 }

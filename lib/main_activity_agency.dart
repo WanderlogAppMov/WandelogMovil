@@ -89,31 +89,20 @@ class MainActivity2 extends StatelessWidget {
                 backgroundColor: Color(0xFFB4C8E6),
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
-              child: Text('Post Travel Package', style: TextStyle(color: Colors.black)),
-              onPressed: () {
-                Navigator.pushNamed(context, '/packagesEditor');
-              },
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFB4C8E6),
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              ),
-              child: Text('Manage Bookings', style: TextStyle(color: Colors.black)),
-              onPressed: () {
-                Navigator.pushNamed(context, '/adminPanel');
-              },
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFB4C8E6),
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              ),
               child: Text('Create Travel Package', style: TextStyle(color: Colors.black)),
               onPressed: () {
                 Navigator.pushNamed(context, '/createTravelPackage');
+              },
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFB4C8E6),
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              ),
+              child: Text('Advanced Package Maganer', style: TextStyle(color: Colors.black)),
+              onPressed: () {
+                Navigator.pushNamed(context, '/packageDetails');
               },
             ),
             SizedBox(height: 10),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'network/api_client.dart';
+import 'packages_viewer.dart';
 import 'user_type_starting_selector.dart'; // Pantalla inicial
 import 'search.dart'; // Importa la pantalla de búsqueda
 import 'results.dart'; // Importa la pantalla de resultados
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
         '/managePackage': (context) => ManagePackage(),
         '/createTravelPackage': (context) => CreatePackage(apiClient: apiClient),
         '/continentsEditor': (context) => ContinentsEditor(),
+        '/packageDetails': (context) => PackageViewer(apiClient: apiClient),
       },
     );
   }
