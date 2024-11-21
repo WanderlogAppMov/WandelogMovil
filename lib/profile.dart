@@ -2,11 +2,80 @@ import 'package:flutter/material.dart';
 import 'main_activity_user.dart';
 import 'favorites.dart';
 import 'network/api_client.dart';
+import 'network/traveler_service.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   final ApiClient apiClient;
+  final String userId;
 
-  Profile({required this.apiClient});
+  Profile({required this.apiClient, required this.userId});
+
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _birthdateController = TextEditingController();
+  bool _isLoading = false;
+  late TravelerService _travelerService;
+
+  @override
+  void initState() {
+    super.initState();
+    _travelerService = TravelerService(apiClient: widget.apiClient);
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final profile = await _travelerService.getProfileById(widget.userId);
+      _firstNameController.text = profile['firstName'];
+      _lastNameController.text = profile['lastName'];
+      _genderController.text = profile['gender'];
+      _birthdateController.text = profile['birthdate'];
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load profile: ${e.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _updateUserProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await _travelerService.updateProfileById(widget.userId, {
+        'firstName': _firstNameController.text,
+        'lastName': _lastNameController.text,
+        'gender': _genderController.text,
+        'birthdate': _birthdateController.text,
+        'username': '',
+        'password': '',
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile: ${e.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +87,12 @@ class Profile extends StatelessWidget {
         centerTitle: true,
         title: CircleAvatar(
           radius: 50,
-          backgroundImage: AssetImage('assets/images/perfiluser.png'), // Ruta de tu imagen de perfil
+          backgroundImage: AssetImage('assets/images/perfiluser.png'),
         ),
       ),
-      body: SingleChildScrollView(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -32,8 +103,8 @@ class Profile extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            // Campos de texto
             TextField(
+              controller: _firstNameController,
               decoration: InputDecoration(
                 labelText: 'First Name',
                 hintText: 'Enter your first name',
@@ -42,6 +113,7 @@ class Profile extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             TextField(
+              controller: _lastNameController,
               decoration: InputDecoration(
                 labelText: 'Last Name',
                 hintText: 'Enter your last name',
@@ -50,6 +122,7 @@ class Profile extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             TextField(
+              controller: _genderController,
               decoration: InputDecoration(
                 labelText: 'Gender',
                 hintText: 'Enter your gender',
@@ -58,28 +131,27 @@ class Profile extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             TextField(
+              controller: _birthdateController,
               decoration: InputDecoration(
                 labelText: 'Birthdate',
                 hintText: 'Enter your birthdate',
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Email',
-                hintText: 'Enter your email address',
-                border: OutlineInputBorder(),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _updateUserProfile,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF034BAC),
+                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                border: OutlineInputBorder(),
+              child: Text(
+                'Update',
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
-              obscureText: true,
             ),
           ],
         ),
@@ -91,29 +163,26 @@ class Profile extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              // Botón para ir a la pantalla principal
               IconButton(
-                icon: Image.asset('assets/images/iconexplore2.png'), // Ruta de tu icono
+                icon: Image.asset('assets/images/iconexplore2.png'),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainActivity(apiClient: apiClient)),
+                    MaterialPageRoute(builder: (context) => MainActivity(apiClient: widget.apiClient, userId: widget.userId)),
                   );
                 },
               ),
-              // Botón para ir a la pantalla de favoritos
               IconButton(
-                icon: Image.asset('assets/images/iconsaved.png'), // Ruta de tu icono
+                icon: Image.asset('assets/images/iconsaved.png'),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FavoritesScreen(apiClient: apiClient)),
+                    MaterialPageRoute(builder: (context) => FavoritesScreen(apiClient: widget.apiClient, userId: widget.userId)),
                   );
                 },
               ),
-              // Botón de perfil
               IconButton(
-                icon: Image.asset('assets/images/iconprofile.png'), // Ruta de tu icono
+                icon: Image.asset('assets/images/iconprofile.png'),
                 onPressed: () {},
               ),
             ],

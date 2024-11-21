@@ -45,7 +45,7 @@ class _LoginUserState extends State<LoginUser> {
             _apiClient.setToken(responseData['token']);
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MainActivity(apiClient: _apiClient)),
+              MaterialPageRoute(builder: (context) => MainActivity(apiClient: _apiClient, userId: responseData['id'].toString())),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
